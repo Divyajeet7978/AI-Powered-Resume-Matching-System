@@ -1,34 +1,64 @@
 from celery import Celery
-from nlp_processor import NLPProcessor
-from database import Database
-import config
+import logging
+from pathlib import Path
+import PyPDF2
+import time
 
-app = Celery('tasks', broker=config.CELERY_BROKER_URL)
-nlp = NLPProcessor()
-db = Database(config.DATABASE_URL)
+from .database import database
+from .nlp_processor import nlp_processor
 
-@app.task
-def process_resume_task(job_id, resume_bytes):
+# Configure Celery
+app = Celery(
+    'resume_matcher',
+    broker='redis://localhost:6379/0',
+    backend='redis://localhost:6379/1'
+)
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+@app.task(bind=True)
+def process_resume_task(self, resume_id: str, job_description: str):
     try:
-        resume_text = extract_text_from_bytes(resume_bytes)
-        job_desc = get_job_description(job_id)
+        # Update task status
+        self.update_state(state='PROGRESS', meta={'progress': 10})
         
-        # Process with NLP
-        skills = nlp.extract_skills(resume_text)
-        score = nlp.calculate_similarity(resume_text, job_desc['text'])
+        # Get resume from database
+        resume = database.get_resume(resume_id)
+        if not resume:
+            raise ValueError(f"Resume {resume_id} not found")
         
-        # Prepare and save results
-        result = ResumeMatchResult(
-            job_id=job_id,
-            resume_id=generate_resume_id(),
-            similarity_score=score,
-            matched_skills=skills['matched'],
-            missing_skills=skills['missing'],
-            experience_match=calculate_experience_match(resume_text, job_desc)
-        )
+        # Extract text from PDF
+        file_path = Path(resume["file_path"])
+        if not file_path.exists():
+            raise ValueError(f"File not found at {file_path}")
         
-        db.save_results(result)
-        return result.id
+        self.update_state(state='PROGRESS', meta={'progress': 30})
+        
+        text = ""
+        with open(file_path, 'rb') as file:
+            reader = PyPDF2.PdfReader(file)
+            for page in reader.pages:
+                text += page.extract_text() or ""
+        
+        self.update_state(state='PROGRESS', meta={'progress': 60})
+        
+        # Process the resume text
+        results = nlp_processor.process_resume(text, job_description)
+        
+        self.update_state(state='PROGRESS', meta={'progress': 80})
+        
+        # Save results to database
+        database.update_match_results(resume_id, results)
+        
+        return {
+            'status': 'SUCCESS',
+            'result': {
+                'resume_id': resume_id,
+                'match_score': results['match_score']
+            }
+        }
     except Exception as e:
-        logger.error(f"Processing failed: {str(e)}")
-        raise
+        logger.error(f"Error processing resume {resume_id}: {e}")
+        raise self.retry(exc=e, countdown=60)

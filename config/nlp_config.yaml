@@ -1,14 +1,14 @@
 nlp:
-  model_path: "./models/bert_model"
-  skill_ontology: "./models/skill_ontology.json"
-  spacy_model: "en_core_web_lg"
-  similarity_threshold: 0.75
-  required_skills_weight: 0.4
-  optional_skills_weight: 0.2
-  experience_weight: 0.3
-  education_weight: 0.1
-
-processing:
-  max_text_length: 10000
-  min_confidence: 0.7
-  batch_size: 8
+  model_settings:
+    spacy_model: "en_core_web_lg"
+    bert_model: "bert-base-uncased"
+    similarity_threshold: 0.7
+  
+  processing:
+    max_text_length: 10000
+    min_skill_confidence: 0.8
+  
+  scoring:
+    skill_weight: 0.6
+    experience_weight: 0.3
+    education_weight: 0.1

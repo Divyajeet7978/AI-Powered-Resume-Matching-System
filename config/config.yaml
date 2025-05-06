@@ -1,7 +1,14 @@
 app:
-  port: 8000
+  name: "AI-Powered Resume Matching System"
+  version: "1.0.0"
   debug: false
+  port: 8000
 
 database:
-  max_connections: 20
-  timeout: 30
+  mongodb_uri: "mongodb://localhost:27017"
+  database_name: "resume_matcher"
+
+celery:
+  broker_url: "redis://localhost:6379/0"
+  result_backend: "redis://localhost:6379/1"
+  task_time_limit: 300

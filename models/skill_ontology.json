@@ -1,22 +1,22 @@
 {
-    "programming_languages": {
-      "Python": ["Python", "Py", "Python3"],
-      "JavaScript": ["JavaScript", "JS", "ES6"],
-      "Java": ["Java", "J2EE", "Java8"]
-    },
-    "frameworks": {
-      "React": ["React", "React.js", "ReactJS"],
-      "Django": ["Django", "Django REST"],
-      "Spring": ["Spring", "Spring Boot"]
-    },
-    "databases": {
-      "PostgreSQL": ["PostgreSQL", "Postgres"],
-      "MongoDB": ["MongoDB", "Mongo"],
-      "MySQL": ["MySQL", "MySql"]
-    },
-    "cloud": {
-      "AWS": ["AWS", "Amazon Web Services"],
-      "Azure": ["Azure", "MS Azure"],
-      "GCP": ["GCP", "Google Cloud"]
-    }
+    "python": ["programming", "backend"],
+    "javascript": ["programming", "frontend"],
+    "react": ["frontend", "javascript", "framework"],
+    "node.js": ["backend", "javascript"],
+    "docker": ["devops", "containerization"],
+    "kubernetes": ["devops", "orchestration"],
+    "aws": ["cloud", "devops"],
+    "machine learning": ["ai", "data science"],
+    "tensorflow": ["ai", "machine learning", "framework"],
+    "pytorch": ["ai", "machine learning", "framework"],
+    "sql": ["database", "backend"],
+    "mongodb": ["database", "nosql"],
+    "git": ["version control", "devops"],
+    "rest api": ["backend", "web services"],
+    "graphql": ["backend", "web services"],
+    "html": ["frontend", "web"],
+    "css": ["frontend", "web"],
+    "typescript": ["programming", "frontend"],
+    "java": ["programming", "backend"],
+    "spring boot": ["backend", "java", "framework"]
   }

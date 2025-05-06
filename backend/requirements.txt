@@ -1,13 +1,18 @@
 fastapi==0.95.2
 uvicorn==0.22.0
 python-multipart==0.0.6
-celery==5.3.1
-redis==4.5.5
-sqlalchemy==2.0.15
-psycopg2-binary==2.9.6
 spacy==3.5.3
 transformers==4.30.2
 torch==2.0.1
+torchvision==0.15.2  # Added compatible version
+celery==5.3.1
+redis==4.5.5
 python-dotenv==1.0.0
-pydantic==1.10.7
-pytest==7.3.1
+PyYAML==6.0
+pymongo==4.3.3
+scikit-learn==1.2.2
+numpy==1.24.3  # Keep this version for compatibility
+pandas==2.0.2
+python-jose==3.3.0
+passlib==1.7.4
+tensorflow==2.12.0  # Downgraded for compatibility
