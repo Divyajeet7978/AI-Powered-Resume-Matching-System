@@ -1,0 +1,7 @@
+app:
+  port: 8000
+  debug: false
+
+database:
+  max_connections: 20
+  timeout: 30

@@ -1,46 +1,29 @@
-// ResumeUploader.jsx
 import React, { useState } from 'react';
 import axios from 'axios';
 
-function ResumeUploader() {
+const ResumeUploader = ({ onUpload }) => {
+  const [jobId, setJobId] = useState('');
   const [file, setFile] = useState(null);
-  const [jobDesc, setJobDesc] = useState('');
-  const [results, setResults] = useState([]);
   
-  const handleUpload = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append('resume', file);
+    formData.append('job_id', jobId);
     
-    const response = await axios.post('/upload-resume/', formData);
-    const resumeId = response.data.resume_id;
-    
-    const matchResponse = await axios.post('/match-resumes/', {
-      text: jobDesc,
-      required_skills: extractSkills(jobDesc) // Implement skill extraction
-    });
-    
-    setResults(matchResponse.data);
+    try {
+      const response = await axios.post('/api/upload-resume/', formData);
+      onUpload(response.data.task_id);
+    } catch (error) {
+      console.error('Upload failed:', error);
+    }
   };
 
   return (
-    <div>
-      <input type="file" onChange={e => setFile(e.target.files[0])} />
-      <textarea 
-        placeholder="Paste job description"
-        value={jobDesc}
-        onChange={e => setJobDesc(e.target.value)}
-      />
-      <button onClick={handleUpload}>Match Resumes</button>
-      
-      <div className="results">
-        {results.map((resume, idx) => (
-          <div key={idx} className="resume-card">
-            <h3>Score: {resume.score.toFixed(2)}</h3>
-            <p>Skills: {resume.skills.join(', ')}</p>
-            <p>Experience: {resume.experience} years</p>
-          </div>
-        ))}
-      </div>
-    </div>
+    <form onSubmit={handleSubmit}>
+      <input type="text" value={jobId} onChange={(e) => setJobId(e.target.value)} placeholder="Job ID" />
+      <input type="file" onChange={(e) => setFile(e.target.files[0])} />
+      <button type="submit">Upload and Match</button>
+    </form>
   );
-}
+};

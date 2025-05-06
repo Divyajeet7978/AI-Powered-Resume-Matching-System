@@ -1,13 +1,13 @@
-# requirements.txt
 fastapi==0.95.2
 uvicorn==0.22.0
-spacy==3.5.0
 python-multipart==0.0.6
-transformers==4.28.1
-sentence-transformers==2.2.2
-scikit-learn==1.2.2
-pinecone-client==2.2.2
-pdfminer.six==20221105
-python-docx==0.8.11
-redis==4.5.4
-celery==5.2.7
+celery==5.3.1
+redis==4.5.5
+sqlalchemy==2.0.15
+psycopg2-binary==2.9.6
+spacy==3.5.3
+transformers==4.30.2
+torch==2.0.1
+python-dotenv==1.0.0
+pydantic==1.10.7
+pytest==7.3.1

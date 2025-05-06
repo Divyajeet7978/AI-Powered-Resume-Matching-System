@@ -1,0 +1,22 @@
+{
+    "programming_languages": {
+      "Python": ["Python", "Py", "Python3"],
+      "JavaScript": ["JavaScript", "JS", "ES6"],
+      "Java": ["Java", "J2EE", "Java8"]
+    },
+    "frameworks": {
+      "React": ["React", "React.js", "ReactJS"],
+      "Django": ["Django", "Django REST"],
+      "Spring": ["Spring", "Spring Boot"]
+    },
+    "databases": {
+      "PostgreSQL": ["PostgreSQL", "Postgres"],
+      "MongoDB": ["MongoDB", "Mongo"],
+      "MySQL": ["MySQL", "MySql"]
+    },
+    "cloud": {
+      "AWS": ["AWS", "Amazon Web Services"],
+      "Azure": ["Azure", "MS Azure"],
+      "GCP": ["GCP", "Google Cloud"]
+    }
+  }

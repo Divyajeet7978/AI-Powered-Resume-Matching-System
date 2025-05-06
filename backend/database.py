@@ -1,37 +1,27 @@
-# database.py
-import pinecone
-import os
+from sqlalchemy import create_engine, Column, String, JSON, Float
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 
-class ResumeDatabase:
-    def __init__(self):
-        pinecone.init(api_key=os.getenv("PINECONE_API_KEY"),
-                    environment="us-west1-gcp")
+Base = declarative_base()
+
+class ResumeMatchResult(Base):
+    __tablename__ = 'resume_matches'
+    
+    id = Column(String, primary_key=True)
+    job_id = Column(String)
+    resume_id = Column(String)
+    similarity_score = Column(Float)
+    matched_skills = Column(JSON)
+    missing_skills = Column(JSON)
+    experience_match = Column(Float)
+    
+class Database:
+    def __init__(self, connection_string):
+        self.engine = create_engine(connection_string)
+        self.Session = sessionmaker(bind=self.engine)
         
-        self.index_name = "resume-matcher"
-        if self.index_name not in pinecone.list_indexes():
-            pinecone.create_index(
-                name=self.index_name,
-                dimension=384,  # matches MiniLM embedding size
-                metric="cosine"
-            )
-        
-        self.index = pinecone.Index(self.index_name)
-        self.metadata_store = {}  # In production, use MongoDB/PostgreSQL
-
-    def store_resume(self, resume_id, text, entities, embedding):
-        self.index.upsert([
-            (resume_id, embedding.tolist(), {
-                'text': text,
-                'skills': entities['skills'],
-                'experience': entities['experience']
-            })
-        ])
-        self.metadata_store[resume_id] = entities
-
-    def get_all_resumes(self):
-        # In production, implement pagination
-        return [
-            {'resume_id': id, 'embedding': self.index.fetch([id])['vectors'][id]['values'],
-            'entities': self.metadata_store[id]
-            for id in self.metadata_store
-        ]
+    def save_results(self, results):
+        session = self.Session()
+        session.add(results)
+        session.commit()
+        session.close()
